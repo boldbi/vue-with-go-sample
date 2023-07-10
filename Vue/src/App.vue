@@ -38,15 +38,10 @@ export default {
     let authorizationUrl = 'http://localhost:8086/authorizationServer';
 
     try {
+      
       const response = await axios.get('http://localhost:8086/getdetails');
-      if(response.data=="")
-      {
-          this.errorMessage = 'Error: embedCondfig.json is empty';
-          this.showErrorModal = true;
-      }
-      else{
-        createBoldBIDashboard(response.data);
-      }      
+      createBoldBIDashboard(response.data);
+          
     } catch (error) {
         this.errorMessage = 'Error: Failed to load embedCondfig.json';
         this.showErrorModal = true;
