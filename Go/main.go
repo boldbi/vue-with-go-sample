@@ -14,26 +14,6 @@ import (
 )
 
  var appconfig map[string]interface{}
-// func parseJSONFile(filePath string) error {
-// 	// Read the JSON file
-// 	fileData, err := ioutil.ReadFile(filePath)
-	
-// 	err = json.Unmarshal(fileData, &appconfig)
-// 	if err != nil {
-// 		return nil
-// 	}
-// 	log.Println(appconfig)
-	
-// 	if value, ok := appconfig["EmbedSecret"]; ok && value != nil {
-// 		embedSecret = value.(string)
-// 	}
-
-// 	if value, ok := appconfig["UserEmail"]; ok && value != nil {
-// 		userMail = value.(string)
-// 	}
-
-// 	return nil
-// }
 
 func main() {
 	go func() {
@@ -61,7 +41,6 @@ func getdetails(w http.ResponseWriter, r *http.Request) {
 	}
 	err = json.Unmarshal(fileData, &appconfig)
 	jsonResponse, err := json.Marshal(appconfig)
-	//log.Println(response)
 	w.Write(jsonResponse)
 }
 func authorizationServer(w http.ResponseWriter, r *http.Request) {
@@ -89,14 +68,12 @@ func authorizationServer(w http.ResponseWriter, r *http.Request) {
 			signatureString, err := getSignatureUrl(embedQueryString)
 			embedDetails := "/embed/authorize?" + embedQueryString + "&embed_signature=" + signatureString
 			query := serverAPIUrl + embedDetails
-			//log.Println(query)
 			result, err := http.Get(query)
 			if err != nil {
 				log.Println(err)
 				http.Error(w, "Error calling API", http.StatusInternalServerError)
 				return
 			}
-			//log.Println(result)
 			response, err := ioutil.ReadAll(result.Body)
 			if err != nil {
 				log.Fatalln(err)

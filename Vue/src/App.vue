@@ -39,20 +39,17 @@ export default {
 
     try {
       const response = await axios.get('http://localhost:8086/getdetails');
-
-      console.log(response.data);
       if(response.data=="")
       {
-       this.errorMessage = 'Error: Failed to load embedConfig.json';
-       this.showErrorModal = true;
+          this.errorMessage = 'Error: embedCondfig.json is empty';
+          this.showErrorModal = true;
       }
       else{
         createBoldBIDashboard(response.data);
       }      
     } catch (error) {
-      console.log(error);
-      this.errorMessage = 'Error: Failed to load embedCondfbfig.json';
-      this.showErrorModal = true;
+        this.errorMessage = 'Error: Failed to load embedCondfig.json';
+        this.showErrorModal = true;
     }
 
     function createBoldBIDashboard(data) {
@@ -70,7 +67,6 @@ export default {
         },
       });
       dashboard.loadDashboard();
-      console.log(dashboard);
     }
   },
 };
@@ -80,7 +76,7 @@ export default {
 .error-message {
   color: red;
   text-align: center;
-  font-size: 18px;
-  margin-bottom: 20px;
+  font-size: 20px;
+  margin-top: 300px
 }
 </style>
