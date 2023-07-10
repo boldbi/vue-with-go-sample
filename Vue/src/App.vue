@@ -35,10 +35,10 @@ export default {
       document.head.appendChild(tag);
     });
 
-    let authorizationUrl = 'http://localhost:8086/getDetails';
+    let authorizationUrl = 'http://localhost:8086/authorizationServer';
 
     try {
-      const response = await axios.get('http://localhost:8086/parseJson');
+      const response = await axios.get('http://localhost:8086/getdetails');
 
       console.log(response.data);
       if(response.data=="")
@@ -51,7 +51,7 @@ export default {
       }      
     } catch (error) {
       console.log(error);
-      this.errorMessage = 'Error: Failed to load embedConfig.json';
+      this.errorMessage = 'Error: Failed to load embedCondfbfig.json';
       this.showErrorModal = true;
     }
 
