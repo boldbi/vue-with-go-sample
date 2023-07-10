@@ -46,7 +46,7 @@ This Bold BI Vue with Go sample contains the Dashboard embedding sample. In this
 
  * Run the back-end `Go` sample by using the following command in the terminal `go run main.go`.
 
- * Open the `Vue` sample in a new window of Visual studio code.
+ * Open the `Vue` sample in a new window of **Visual Studio Code.**
 
  * Install all dependent packages by executing the following command `npm install`.
 
