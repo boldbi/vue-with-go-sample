@@ -43,7 +43,7 @@ export default {
       createBoldBIDashboard(response.data);
           
     } catch (error) {
-        this.errorMessage = 'Error: Failed to load embedCondfig.json';
+        this.errorMessage = 'Error: embedCondfig.json file is missing';
         this.showErrorModal = true;
     }
 
