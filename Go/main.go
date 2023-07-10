@@ -36,7 +36,7 @@ func getdetails(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	fileData, err := ioutil.ReadFile("embedConfig.json")
 	if err != nil {
-		log.Println("embedConfig file is not found")
+		log.Println("embedCondfig.json file is missing")
 
 	}
 	err = json.Unmarshal(fileData, &appconfig)
