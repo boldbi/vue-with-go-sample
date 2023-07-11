@@ -1,119 +1,71 @@
 # BoldBI Embedding Vue with Go Sample
 
-This Bold BI Vue with Go sample contains the Dashboard embedding sample.In this sample, the Vue application acts as the front-end, and the Go sample act as the back-end application.This sample demonstrates the dashboard rendering with the available dashboard in your Bold BI server.
+This Bold BI Vue with Go sample contains the Dashboard embedding sample. In this sample, the Vue application acts as the front-end, and the Go sample act as the back-end application.This sample demonstrates the dashboard rendering with the available dashboard in your Bold BI server.
 
-This section guides you using the Bold BI dashboard in your Vue with Go sample application.
+## Dashboard view
 
- * [Requirements to run the demo](#requirements-to-run-the-demo)
- * [Using the Vue with Go sample](#using-the-vue-with-go-sample)
- * [Online Demos](#online-demos)
- * [Documentation](#documentation)
+   ![Dashboard view](https://github.com/boldbi/vue-with-go-sample/assets/129486688/381aa89c-6870-4489-a744-c3617abc7646)
 
- ## Requirements to run the demo
-
-The samples require the following requirements to run
+## Prerequisites
 
  * [Go installer](https://go.dev/dl/)
  * [Visual Studio Code](https://code.visualstudio.com/download)
  * [Node.js](https://nodejs.org/en/)
 
- ## Using the Vue with Go sample
- 
- * Open the file `main.go` of the Go sample in Visual studio code. 
 
- * Please change the following properties in the `main.go` file as per your Bold BI Server.
+#### Help link
 
-<meta charset="utf-8"/>
-<table>
-  <tbody>
-    <tr>
-        <td align="left">EmbedSecret</td>
-        <td align="left">Get your EmbedSecret key from the Embed tab by enabling the `Enable embed authentication` on the Administration page https://help.boldbi.com/embedded-bi/site-administration/embed-settings/.</td>
-    </tr>
-    <tr>
-        <td align="left">UserEmail</td>
-        <td align="left">UserEmail of the Admin in your Bold BI, which would be used to get the dashboard list.</td>
-    </tr>
-  </tbody>
-</table>
+ * https://help.boldbi.com/embedded-bi/faq/where-can-i-find-the-product-version/
 
-* Now run the back-end Go sample by using the following command in the terminal.
+ #### Supported browsers
+  
+  * Google Chrome, Microsoft Edge, Mozilla Firefox.
 
-```bash
- go run main.go
-```
+## Configuration
 
-* Open the `Vue` sample in a new window of Visual studio code.
+ * Please ensure that you have enabled embed authentication on the `embed settings` page. If it is not currently enabled, please refer to the following image or detailed [instructions](https://help.boldbi.com/site-administration/embed-settings/#get-embed-secret-code) to enable it.
 
-* Open the `App.Vue` in the following location, /src/App.Vue.
+    ![Embed Settings](https://github.com/boldbi/aspnet-core-sample/assets/91586758/b3a81978-9eb4-42b2-92bb-d1e2735ab007)
 
-* Please change the following properties in the `App.Vue` file as per your Bold BI server and back-end application.
+ * To download the `embedConfig.json` file, please follow this [link](https://help.boldbi.com/site-administration/embed-settings/#get-embed-configuration-file) for reference. Additionally, you can refer to the following image for visual guidance.
 
-    <meta charset="utf-8"/>
-    <table>
-    <tbody>
-        <tr>
-            <td align="left">rootUrl</td>
-            <td align="left">Dashboard Server URL (Eg: http://localhost:5000/bi, http://demo.boldbi.com/bi).</td>
-        </tr>
-        <tr>
-            <td align="left">siteIdentifier</td>
-            <td align="left">For the Bold BI Enterprise edition, it should be like `site/site1`. For Bold BI Cloud, it should be an empty string.</td>
-        </tr>
-        <tr>
-            <td align="left">authorizationUrl</td>
-            <td align="left">Url of the GetDetails action in the Go application(http://localhost:8086/getDetails).</td>
-        </tr>
-        <tr>
-            <td align="left">environment</td>
-            <td align="left">Your Bold BI application environment. (If Cloud, you should use `cloud,` if Enterprise, you should use `onpremise`).</td>
-        </tr>
-        <tr>
-            <td align="left">dashboardId</td>
-            <td align="left">Provide the dashboard id of the dashboard you want to embed in view or edit mode. Ignore this property to create a new dashboard.</td>
-        </tr>
-    </tbody>
-    </table>
+    ![Embed Settings Download](https://github.com/boldbi/aspnet-core-sample/assets/91586758/d27d4cfc-6a3e-4c34-975e-f5f22dea6172)
+    ![EmbedConfig Properties](https://github.com/boldbi/aspnet-core-sample/assets/91586758/d6ce925a-0d4c-45d2-817e-24d6d59e0d63)
 
+ * Copy the downloaded `embedConfig.json` file and paste it into the designated [location](https://github.com/boldbi/react-with-go-sample/tree/master/Go) within the application. Please ensure that you have placed it in the application as shown in the following image.
 
+   ![EmbedConfig image](https://github.com/boldbi/vue-with-go-sample/assets/129486688/bf994470-ed88-46e3-9b3e-2c941d42a2a6)
 
-### Install npm
+ ## Developer IDE
 
-To install all dependent packages, use the below command
+  * [Visual studio code](https://code.visualstudio.com/download)
 
-```bash
-npm install
-```
+ ### Run a Sample Using Visual Studio Code
 
-### Install Bold BI Embedded SDK package
+ * Open the `Go` sample in **Visual Studio Code.**
 
-To install the Bold BI Embedded SDK package, use the following command
+ * Run the back-end `Go` sample by using the following command in the terminal `go run main.go`.
 
-```bash
-npm install -save @boldbi/boldbi-embedded-sdk
-```
+ * Open the `Vue` sample in a new window of **Visual Studio Code.**
 
-### Run/Serve
+ * Install all dependent packages by executing the following command `npm install`.
 
-To run the sample, use the below command
+ * Finally, run the application using the following command `npm run serve`.
 
-```bash
-npm run serve
-```
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+ * After the application has started, it will display a URL in the command line interface, typically something like (e.g., https://localhost:8080). Copy this URL and paste it into your default web browser.
 
-The page will reload if you make edits.<br />
+   ![Dashboard view](https://github.com/boldbi/vue-with-go-sample/assets/129486688/381aa89c-6870-4489-a744-c3617abc7646)
 
-Please refer to the [help documentation](https://help.boldbi.com/embedded-bi/javascript-based/samples/v3.3.40-or-later/vuejs-with-go/#how-to-run-the-sample) to know how to run the sample.
+Please refer to the [help documentation](https://help.boldbi.com/embedding-options/embedding-sdk/samples/vuejs-with-go/#how-to-run-the-sample) to know how to run the sample.
 
-## Online Demos
+## Important notes
+
+In a real-world application, it is recommended not to store passwords and sensitive information in configuration files for security reasons. Instead, you should consider using a secure application, such as Key Vault, to safeguard your credentials.
+
+## Online demos
 
 Look at the Bold BI Embedding sample to live demo [here](https://samples.boldbi.com/embed).
-
 
 ## Documentation
 
 A complete Bold BI Embedding documentation can be found on [Bold BI Embedding Help](https://help.boldbi.com/embedded-bi/javascript-based/).
-
-
