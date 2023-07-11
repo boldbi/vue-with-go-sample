@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"fmt"
 )
 
  var appconfig map[string]interface{}
@@ -25,7 +26,7 @@ func main() {
 		}
 	}()
 
-	log.Println("Go server is running on port 8086")
+	fmt.Println("Go server is running on port 8086")
 	select {}
 }
 

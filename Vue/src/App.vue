@@ -17,7 +17,12 @@ window.jQuery = $;
 
 export default {
   name: 'App',
-  mounted: function() {
+  data() {
+    return {
+      errorMessage: '',
+    };
+  },
+  async mounted() {
     var scripts = [
       'https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js',
     ];
@@ -35,8 +40,15 @@ export default {
     try {
       
       const response = await axios.get('http://localhost:8086/getdetails');
-      createBoldBIDashboard(response.data);
-          
+       if(response.data== null)
+      {
+        this.errorMessage = 'Error: embedCondfig.json file is missing';
+        this.showErrorModal = true;
+      }
+      else{
+        createBoldBIDashboard(response.data);
+      }
+      
     } catch (error) {
         this.errorMessage = 'Error: embedCondfig.json file is missing';
         this.showErrorModal = true;
