@@ -50,8 +50,6 @@ This Bold BI Vue with Go sample contains the Dashboard embedding sample. In this
 
  * Install all dependent packages by executing the following command `npm install`.
 
-   > **Note:** If you are using a version of Node.js that is higher than v16.17, you should enter the following command in the terminal `$env:NODE_OPTIONS="--openssl-legacy-provider"`.
-
  * Finally, run the application using the following command `npm run serve`.
 
  * After the application has started, it will display a URL in the command line interface, typically something like (e.g., https://localhost:8080). Copy this URL and paste it into your default web browser.
