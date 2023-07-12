@@ -1,9 +1,9 @@
 <template>
   <div id="app" ref="app">
     <div id="dashboard" ref="dashboard">
-      <b-modal v-model="showErrorModal" title="Error" centered>
+      <div id="errorModal" class="modal" v-show="showErrorModal">
         <p class="error-message">{{ errorMessage }}</p>
-      </b-modal>
+      </div>
     </div>
   </div>
 </template>
