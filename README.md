@@ -44,7 +44,7 @@ This Bold BI Vue with Go sample contains the Dashboard embedding sample. In this
    
   5. Finally, run the application using the following command `npm run serve`.
    
-  6. After the application has started, it will display a URL in the command line interface, typically something like (e.g., https://localhost:8080). Copy this URL and paste it into your default web browser.
+  6. After the application has started, it will display a URL in the `command line interface`, typically something like (e.g., https://localhost:8080). Copy this URL and paste it into your default web browser.
 
  ## Developer IDE
 
@@ -62,7 +62,7 @@ This Bold BI Vue with Go sample contains the Dashboard embedding sample. In this
 
  * Finally, run the application using the following command `npm run serve`.
 
- * After the application has started, it will display a URL in the command line interface, typically something like (e.g., https://localhost:8080). Copy this URL and paste it into your default web browser.
+ * After the application has started, it will display a URL in the `command line interface`, typically something like (e.g., https://localhost:8080). Copy this URL and paste it into your default web browser.
 
    ![Dashboard view](https://github.com/boldbi/vue-with-go-sample/assets/129486688/381aa89c-6870-4489-a744-c3617abc7646)
 
