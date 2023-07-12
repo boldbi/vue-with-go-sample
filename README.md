@@ -12,11 +12,6 @@ This Bold BI Vue with Go sample contains the Dashboard embedding sample. In this
  * [Visual Studio Code](https://code.visualstudio.com/download)
  * [Node.js](https://nodejs.org/en/)
 
-
-#### Help link
-
- * https://help.boldbi.com/embedded-bi/faq/where-can-i-find-the-product-version/
-
  #### Supported browsers
   
   * Google Chrome, Microsoft Edge, Mozilla Firefox.
