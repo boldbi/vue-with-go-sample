@@ -31,6 +31,8 @@ This Bold BI Vue with Go sample contains the Dashboard embedding sample. In this
 
    ![EmbedConfig image](https://github.com/boldbi/vue-with-go-sample/assets/129486688/bf994470-ed88-46e3-9b3e-2c941d42a2a6)
 
+### Run a Sample Using Command prompt
+* 
  ## Developer IDE
 
   * [Visual studio code](https://code.visualstudio.com/download)
