@@ -1,66 +1,84 @@
 <template>
   <div id="app" ref="app">
-    <div id="dashboard" ref="dashboard"></div>
+    <div id="dashboard" ref="dashboard">
+      <div id="errorModal" class="modal" v-show="showErrorModal">
+        <p class="error-message">{{ errorMessage }} Please use this <a href="https://help.boldbi.com/embedded-bi/site-administration/embed-settings/" target="_blank">link</a> to obtain the Json file from the Bold BI server.</p>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import Vue from 'vue'
-import $ from 'jquery'
-import {BoldBI} from '@boldbi/boldbi-embedded-sdk';
-window.jQuery = $
+import $ from 'jquery';
+import { BoldBI } from '@boldbi/boldbi-embedded-sdk';
+import axios from 'axios';
 
-export default Vue.extend ({
+window.jQuery = $;
+
+export default {
   name: 'App',
-  mounted: function() {
+  data() {
+    return {
+      errorMessage: '',
+    };
+  },
+  async mounted() {
     var scripts = [
-      "https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js",
+      'https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js',
     ];
-    scripts.forEach(script => {
-      let tag = document.createElement("script");
-      tag.setAttribute("src", script);
-      tag.setAttribute("type", "text/javascript");
-      tag.setAttribute("defer", "defer");
+    scripts.forEach((script) => {
+      let tag = document.createElement('script');
+      tag.setAttribute('src', script);
+      tag.setAttribute('type', 'text/javascript');
+      tag.setAttribute('defer', 'defer');
       tag.async = true;
       document.head.appendChild(tag);
     });
 
-    //Bold BI Server URL (ex: http://localhost:5000/bi, http://demo.boldbi.com/bi)
-    let rootUrl = "http://localhost:5000/bi";
-    //For Bold BI Enterprise edition, it should be like `site/site1`. For Bold BI Cloud, it should be empty string.
-    let siteIdentifier = "site/site1";
-    //ID of the Dashboard
-    let dashboardId = "";
-    //Your Bold BI application environment. (If Cloud, you should use `cloud`, if Enterprise, you should use `enterprise`)
-    let environment = "enterprise";
-    //Url of the GetDetails api in Go server, which running in 8086 port and act as Authorization Server.
-    let authorizationUrl = "http://localhost:8086/getDetails";
+    let authorizationUrl = 'http://localhost:8086/authorizationserver';
 
-    let dashboard = BoldBI.create({
-                    serverUrl: rootUrl +"/"+ siteIdentifier,
-                    dashboardId: dashboardId,
-                    embedContainerId: "dashboard",
-                    embedType: BoldBI.EmbedType.Component,
-                    environment: environment == "enterprise" ? BoldBI.Environment.Enterprise : BoldBI.Environment.Cloud,
-                    width: "100%",
-                    height: window.innerHeight + "px",
-                    expirationTime: 100000,
-                    authorizationServer: {
-                        url: authorizationUrl
-                    }
-                });
-                dashboard.loadDashboard(); 
-                console.log(dashboard);
-  }
-});
+    try {
+      
+      const response = await axios.get('http://localhost:8086/getdetails');
+       if(response.data== null)
+      {
+        this.errorMessage = 'To compile and run the project, an embed config file needs to be required.';
+        this.showErrorModal = true;
+      }
+      else{
+        createBoldBIDashboard(response.data);
+      }
+      
+    } catch (error) {
+        this.errorMessage = 'To compile and run the project, an embed config file needs to be required.';
+        this.showErrorModal = true;
+    }
+
+    function createBoldBIDashboard(data) {
+      let dashboard = BoldBI.create({
+        serverUrl: data.ServerUrl + '/' + data.SiteIdentifier,
+        dashboardId: data.DashboardId,
+        embedContainerId: 'dashboard',
+        embedType: BoldBI.EmbedType.Component,
+        environment: data.Environment,
+        width: '100%',
+        height: window.innerHeight + 'px',
+        expirationTime: 100000,
+        authorizationServer: {
+          url: authorizationUrl,
+        },
+      });
+      dashboard.loadDashboard();
+    }
+  },
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.error-message {
+  color: red;
   text-align: center;
-  color: #2c3e50;
+  font-size: 20px;
+  margin-top: 300px
 }
 </style>
