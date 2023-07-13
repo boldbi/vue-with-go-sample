@@ -2,7 +2,7 @@
   <div id="app" ref="app">
     <div id="dashboard" ref="dashboard">
       <div id="errorModal" class="modal" v-show="showErrorModal">
-        <p class="error-message">{{ errorMessage }}</p>
+        <p class="error-message">{{ errorMessage }} You can get the JSON file from the Bold BI server using this <a v-if="showErrorModal" href="https://help.boldbi.com/embedded-bi/site-administration/embed-settings/" target="_blank">link</a>.</p>
       </div>
     </div>
   </div>
@@ -42,7 +42,7 @@ export default {
       const response = await axios.get('http://localhost:8086/getdetails');
        if(response.data== null)
       {
-        this.errorMessage = 'Error: embedCondfig.json file is missing';
+        this.errorMessage = 'To compile and run the project, an embed config file needs to be required.';
         this.showErrorModal = true;
       }
       else{
@@ -50,7 +50,7 @@ export default {
       }
       
     } catch (error) {
-        this.errorMessage = 'Error: embedCondfig.json file is missing';
+        this.errorMessage = 'To compile and run the project, an embed config file needs to be required.';
         this.showErrorModal = true;
     }
 

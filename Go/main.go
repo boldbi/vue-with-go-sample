@@ -37,7 +37,7 @@ func getdetails(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	fileData, err := ioutil.ReadFile("embedConfig.json")
 	if err != nil {
-		log.Println("embedCondfig.json file is missing")
+		fmt.Println("embedCondfig.json file is missing")
 
 	}
 	err = json.Unmarshal(fileData, &appconfig)
@@ -56,7 +56,7 @@ func authorizationServer(w http.ResponseWriter, r *http.Request) {
 	}
 	if len(body) > 0 {
 		if queryString, err := unmarshal(string(body)); err != nil {
-			log.Println("error converting", err)
+			fmt.Println("error converting", err)
 		} else {
 			userMail := appconfig["UserEmail"].(string)
 			serverAPIUrl := queryString.(map[string]interface{})["dashboardServerApiUrl"].(string)
@@ -69,7 +69,7 @@ func authorizationServer(w http.ResponseWriter, r *http.Request) {
 			query := serverAPIUrl + embedDetails
 			result, err := http.Get(query)
 			if err != nil {
-				log.Println(err)
+				fmt.Println(err)
 			}
 			response, err := ioutil.ReadAll(result.Body)
 			if err != nil {
