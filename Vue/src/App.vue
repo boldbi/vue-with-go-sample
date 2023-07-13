@@ -2,7 +2,7 @@
   <div id="app" ref="app">
     <div id="dashboard" ref="dashboard">
       <div id="errorModal" class="modal" v-show="showErrorModal">
-        <p class="error-message">{{ errorMessage }} You can get the JSON file from the Bold BI server using this <a v-if="showErrorModal" href="https://help.boldbi.com/embedded-bi/site-administration/embed-settings/" target="_blank">link</a>.</p>
+        <p class="error-message">{{ errorMessage }} Please use this <a href="https://help.boldbi.com/embedded-bi/site-administration/embed-settings/" target="_blank">link</a> to obtain the Json file from the Bold BI server.</p>
       </div>
     </div>
   </div>
