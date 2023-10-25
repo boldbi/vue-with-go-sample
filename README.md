@@ -28,10 +28,10 @@ This Bold BI Vue with Go sample contains the Dashboard embedding sample. In this
     ![Embed Settings Download](https://github.com/boldbi/aspnet-core-sample/assets/91586758/d27d4cfc-6a3e-4c34-975e-f5f22dea6172)
     ![EmbedConfig Properties](https://github.com/boldbi/aspnet-core-sample/assets/91586758/d6ce925a-0d4c-45d2-817e-24d6d59e0d63)
 
- * Copy the downloaded `embedConfig.json` file and paste it into the designated [location](https://github.com/boldbi/react-with-go-sample/tree/master/Go) within the application. Please ensure that you have placed it in the application as shown in the following image.
+ * Copy the downloaded `embedConfig.json` file and paste it into the designated [location](https://github.com/boldbi/vue-with-go-sample/tree/master/Go) within the application. Please ensure that you have placed it in the application as shown in the following image.
 
    ![EmbedConfig image](https://github.com/boldbi/vue-with-go-sample/assets/129486688/bf994470-ed88-46e3-9b3e-2c941d42a2a6)
-
+v
  ## Run a Sample Using Command Line Interface
 
   1. Open the **command line interface** and navigate to the specified file [location](https://github.com/boldbi/vue-with-go-sample/tree/master/Go) where the project is located.
