@@ -14,7 +14,15 @@ import (
 	"fmt"
 )
 
- var appconfig map[string]interface{}
+var appconfig map[string]interface{}
+
+type EmbedConfig struct {
+	DashboardId    string `json:"DashboardId"`
+	ServerUrl      string `json:"ServerUrl"`
+	EmbedType      string `json:"EmbedType"`
+	Environment    string `json:"Environment"`
+	SiteIdentifier string `json:"SiteIdentifier"`
+}
 
 func main() {
 	go func() {
@@ -41,9 +49,20 @@ func getdetails(w http.ResponseWriter, r *http.Request) {
 
 	}
 	err = json.Unmarshal(fileData, &appconfig)
-	jsonResponse, err := json.Marshal(appconfig)
+
+	// Create a custom struct to hold the specific properties you want to return.
+	clientEmbedConfigData := EmbedConfig{
+		DashboardId:    appconfig["DashboardId"].(string),
+		ServerUrl:      appconfig["ServerUrl"].(string),
+		SiteIdentifier: appconfig["SiteIdentifier"].(string),
+		EmbedType:      appconfig["EmbedType"].(string),
+		Environment:    appconfig["Environment"].(string),
+	}
+
+	jsonResponse, err := json.Marshal(clientEmbedConfigData)
 	w.Write(jsonResponse)
 }
+
 func authorizationServer(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
