@@ -59,14 +59,11 @@ export default {
         serverUrl: data.ServerUrl + '/' + data.SiteIdentifier,
         dashboardId: data.DashboardId,
         embedContainerId: 'dashboard',
-        embedType: BoldBI.EmbedType.Component,
-        environment: data.Environment,
         width: '100%',
         height: window.innerHeight + 'px',
-        expirationTime: 100000,
         authorizationServer: {
           url: authorizationUrl,
-        },
+        }
       });
       dashboard.loadDashboard();
     }
