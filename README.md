@@ -1,6 +1,6 @@
 # BoldBI Embedding Vue with Go Sample
 
-This Bold BI Vue with Go sample contains the Dashboard embedding sample. In this sample, the Vue application acts as the front-end, and the Go sample act as the back-end application.This sample demonstrates the dashboard rendering with the available dashboard in your Bold BI server.
+This Bold BI Vue with Go sample contains the Dashboard embedding sample. In this sample, the Vue application acts as the front-end, and the Go sample act as the back-end application. This sample demonstrates the dashboard rendering with the available dashboard in your Bold BI server.
 
 ## Dashboard view
 
@@ -37,7 +37,7 @@ This Bold BI Vue with Go sample contains the Dashboard embedding sample. In this
 
   1. Open the **command line interface** and navigate to the specified file [location](https://github.com/boldbi/vue-with-go-sample/tree/master/Go) where the project is located.
 
-  2. Run the back-end `Go` sample by using the following command `go run main.go`.
+  2. Run the back-end `Go` sample by using the following command `go run tokengeneration.go`.
 
   3. Open the **command line interface** and navigate to the specified file [location](https://github.com/boldbi/vue-with-go-sample/tree/master/Vue) where the project is located.
 
@@ -45,7 +45,7 @@ This Bold BI Vue with Go sample contains the Dashboard embedding sample. In this
 
   5. Finally, run the application using the following command `npm run serve`.
 
-  6. After the application has started, it will display a URL in the `command line interface`, typically something like (e.g., <https://localhost:8080>). Copy this URL and paste it into your default web browser.
+  6. After the application has started, it will display a URL in the `command line interface`, typically something like (e.g., <http://localhost:8080>). Copy this URL and paste it into your default web browser.
 
 ## Developer IDE
 
@@ -55,7 +55,7 @@ This Bold BI Vue with Go sample contains the Dashboard embedding sample. In this
 
 * Open the `Go` sample in **Visual Studio Code**.
 
-* Run the back-end `Go` sample by using the following command in the terminal `go run main.go`.
+* Run the back-end `Go` sample by using the following command in the terminal `go run tokengeneration.go`.
 
 * Open the `Vue` sample in a new window of **Visual Studio Code**.
 
@@ -63,7 +63,7 @@ This Bold BI Vue with Go sample contains the Dashboard embedding sample. In this
 
 * Finally, run the application using the following command `npm run serve`.
 
-* After the application has started, it will display a URL in the `command line interface`, typically something like (e.g., <https://localhost:8080>). Copy this URL and paste it into your default web browser.
+* After the application has started, it will display a URL in the `command line interface`, typically something like (e.g., <http://localhost:8080>). Copy this URL and paste it into your default web browser.
 
    ![Dashboard view](/images/dashboard.png)
 
