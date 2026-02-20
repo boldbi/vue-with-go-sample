@@ -2,16 +2,19 @@ package main
 
 import (
     "encoding/json"
-    "os"
+    "fmt"
     "io"
-    "bytes"
     "log"
     "net/http"
+    "os"
+    "bytes"
     "strings"
-    "fmt"
+    "sync"
 )
 
 var embedConfig map[string]interface{}
+var embedConfigOnce sync.Once
+var embedConfigErr error
 
 type EmbedConfig struct {
     DashboardId    string `json:"DashboardId"`
@@ -29,48 +32,22 @@ func main() {
 }
 
 func getdetails(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Content-Type", "application/json")
-    w.Header().Set("Access-Control-Allow-Origin", "*")
-    w.Header().Set("Access-Control-Allow-Methods", "GET")
-    w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+    setCORS(w, "GET")
 
-    data, err := os.ReadFile("embedConfig.json")
-    if err != nil {
+    if err := loadEmbedConfig(); err != nil {
         w.WriteHeader(http.StatusInternalServerError)
-        json.NewEncoder(w).Encode(map[string]string{"error": "embedConfig.json file not found"})
+        json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
         return
-    }
-
-    // trim BOM only and unmarshal (don't strip '//' since URLs contain it)
-    s := strings.TrimPrefix(string(data), "\uFEFF")
-    var cfg map[string]interface{}
-    if err := json.Unmarshal([]byte(strings.TrimSpace(s)), &cfg); err != nil {
-        w.WriteHeader(http.StatusInternalServerError)
-        json.NewEncoder(w).Encode(map[string]string{"error": "invalid embedConfig.json: " + err.Error()})
-        return
-    }
-    // persist for other handlers
-    embedConfig = cfg
-
-    // helper to safely get string fields
-    getStr := func(m map[string]interface{}, key string) string {
-        if v, ok := m[key]; ok && v != nil {
-            if s, ok := v.(string); ok {
-                return s
-            }
-        }
-        return ""
     }
 
     clientEmbedConfigData := EmbedConfig{
-        DashboardId:    getStr(cfg, "DashboardId"),
-        ServerUrl:      getStr(cfg, "ServerUrl"),
-        SiteIdentifier: getStr(cfg, "SiteIdentifier"),
-        EmbedType:      getStr(cfg, "EmbedType"),
-        Environment:    getStr(cfg, "Environment"),
+        DashboardId:    getConfigStr("DashboardId"),
+        ServerUrl:      getConfigStr("ServerUrl"),
+        SiteIdentifier: getConfigStr("SiteIdentifier"),
+        EmbedType:      getConfigStr("EmbedType"),
+        Environment:    getConfigStr("Environment"),
     }
 
-    // Validate required fields
     if clientEmbedConfigData.ServerUrl == "" || clientEmbedConfigData.SiteIdentifier == "" {
         w.WriteHeader(http.StatusBadRequest)
         json.NewEncoder(w).Encode(map[string]string{"error": "ServerUrl and SiteIdentifier are required in embedConfig.json"})
@@ -87,49 +64,23 @@ func getdetails(w http.ResponseWriter, r *http.Request) {
 }
 
 func tokenGeneration(w http.ResponseWriter, r *http.Request) {
-    // CORS headers
-    w.Header().Set("Content-Type", "application/json")
-    w.Header().Set("Access-Control-Allow-Origin", "*")
-    w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
-    w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+    setCORS(w, "POST, OPTIONS")
 
     if r.Method == http.MethodOptions {
         w.WriteHeader(http.StatusOK)
         return
     }
 
-    // ensure embedConfig is loaded
-    if embedConfig == nil {
-        data, err := os.ReadFile("embedConfig.json")
-        if err != nil {
-            http.Error(w, "embedConfig.json file not found", http.StatusInternalServerError)
-            return
-        }
-        var cfg map[string]interface{}
-        if err := json.Unmarshal(data, &cfg); err != nil {
-            http.Error(w, "invalid embedConfig.json", http.StatusInternalServerError)
-            return
-        }
-        embedConfig = cfg
+    if err := loadEmbedConfig(); err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
     }
 
-    // helper to safely read string fields without repeating .(string)
-    getStr := func(m map[string]interface{}, keys ...string) string {
-        for _, k := range keys {
-            if v, ok := m[k]; ok && v != nil {
-                if s, ok := v.(string); ok {
-                    return s
-                }
-            }
-        }
-        return ""
-    }
-
-    serverUrl := getStr(embedConfig, "ServerUrl", "serverurl")
-    siteIdentifier := getStr(embedConfig, "SiteIdentifier", "siteidentifier")
-    email := getStr(embedConfig, "UserEmail", "email")
-    embedSecret := getStr(embedConfig, "EmbedSecret", "embedsecret")
-    dashboardId := getStr(embedConfig, "DashboardId", "dashboardId")
+    serverUrl := getConfigStr("ServerUrl", "serverurl")
+    siteIdentifier := getConfigStr("SiteIdentifier", "siteidentifier")
+    email := getConfigStr("UserEmail", "email")
+    embedSecret := getConfigStr("EmbedSecret", "embedsecret")
+    dashboardId := getConfigStr("DashboardId", "dashboardId")
 
     if serverUrl == "" || siteIdentifier == "" {
         http.Error(w, "ServerUrl and SiteIdentifier are required", http.StatusBadRequest)
@@ -146,14 +97,14 @@ func tokenGeneration(w http.ResponseWriter, r *http.Request) {
         },
     }
 
-    payloadBytes, err := json.Marshal(embedDetails)
+    payload, err := json.Marshal(embedDetails)
     if err != nil {
         http.Error(w, "failed to marshal embedDetails", http.StatusInternalServerError)
         return
     }
 
-    requestUrl := fmt.Sprintf("%s/api/%s/embed/authorize", serverUrl, siteIdentifier)
-    resp, err := http.Post(requestUrl, "application/json", bytes.NewBuffer(payloadBytes))
+    requestUrl := fmt.Sprintf("%s/api/%s/embed/authorize", strings.TrimRight(embedDetails["serverurl"].(string), "/"), embedDetails["siteidentifier"].(string))
+    resp, err := http.Post(requestUrl, "application/json", bytes.NewReader(payload))
     if err != nil {
         http.Error(w, err.Error(), http.StatusBadGateway)
         return
@@ -166,48 +117,59 @@ func tokenGeneration(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    // Try to parse JSON response; if not JSON, return raw body
     var respObj map[string]interface{}
     if err := json.Unmarshal(respBytes, &respObj); err != nil {
-        log.Println("authorize response (non-JSON):", string(respBytes))
+        w.WriteHeader(resp.StatusCode)
         w.Write(respBytes)
         return
     }
 
-    // helper to extract access_token from common places
-    findToken := func(obj map[string]interface{}) string {
-        // check Data or data first
-        for _, key := range []string{"Data", "data"} {
-            if v, ok := obj[key]; ok {
-                if m, ok := v.(map[string]interface{}); ok {
-                    if t, ok := m["access_token"].(string); ok {
-                        return t
-                    }
-                }
-            }
-        }
-        // check top-level
-        if t, ok := obj["access_token"].(string); ok {
-            return t
-        }
-        return ""
-    }
-
-    token := findToken(respObj)
-    if token == "" {
-        http.Error(w, "access_token not found in response", http.StatusBadGateway)
+    d, ok := respObj["Data"].(map[string]interface{})
+    if !ok {
+        http.Error(w, "invalid response shape: Data field missing", http.StatusBadGateway)
         return
     }
-
+    token, ok := d["access_token"].(string)
+    if !ok || token == "" {
+        http.Error(w, "access_token not found in Data", http.StatusBadGateway)
+        return
+    }
     w.Write([]byte(token))
 }
 
-func unmarshal(data string) (interface{}, error) {
-    var iface interface{}
-    decoder := json.NewDecoder(strings.NewReader(data))
-    decoder.UseNumber()
-    if err := decoder.Decode(&iface); err != nil {
-        return nil, err
+// loadEmbedConfig reads and parses embedConfig.json once and caches the result.
+func loadEmbedConfig() error {
+    embedConfigOnce.Do(func() {
+        data, err := os.ReadFile("embedConfig.json")
+        if err != nil {
+            embedConfigErr = fmt.Errorf("embedConfig.json file not found: %w", err)
+            return
+        }
+        s := strings.TrimPrefix(string(data), "\uFEFF")
+        var cfg map[string]interface{}
+        if err := json.Unmarshal([]byte(strings.TrimSpace(s)), &cfg); err != nil {
+            embedConfigErr = fmt.Errorf("invalid embedConfig.json: %w", err)
+            return
+        }
+        embedConfig = cfg
+    })
+    return embedConfigErr
+}
+
+// setCORS writes common CORS and JSON headers
+func setCORS(w http.ResponseWriter, methods string) {
+    w.Header().Set("Content-Type", "application/json")
+    w.Header().Set("Access-Control-Allow-Origin", "*")
+    w.Header().Set("Access-Control-Allow-Methods", methods)
+    w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+}
+
+// getConfigStr returns the first non-empty string value from embedConfig for provided keys
+func getConfigStr(keys ...string) string {
+    for _, k := range keys {
+        if s, ok := embedConfig[k].(string); ok && s != "" {
+            return s
+        }
     }
-    return iface, nil
+    return ""
 }
