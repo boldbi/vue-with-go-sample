@@ -35,39 +35,53 @@ export default {
       document.head.appendChild(tag);
     });
 
-    let authorizationUrl = 'http://localhost:8086/authorizationserver';
+    //Url of the tokenGeneration action in tokengeneration.go
+    const tokenGenerationUrl = "http://localhost:8086/tokenGeneration";
 
     try {
-      
       const response = await axios.get('http://localhost:8086/getdetails');
-       if(response.data== null)
+      if(response.data== null)
       {
         this.errorMessage = 'To compile and run the project, an embed config file needs to be required.';
         this.showErrorModal = true;
       }
       else{
-        createBoldBIDashboard(response.data);
-      }
-      
+        renderDashboard(response.data);
+      } 
     } catch (error) {
         this.errorMessage = 'To compile and run the project, an embed config file needs to be required.';
         this.showErrorModal = true;
     }
 
-    function createBoldBIDashboard(data) {
-      let dashboard = BoldBI.create({
-        serverUrl: data.ServerUrl + '/' + data.SiteIdentifier,
-        dashboardId: data.DashboardId,
-        embedContainerId: 'dashboard',
-        width: '100%',
-        height: window.innerHeight + 'px',
-        authorizationServer: {
-          url: authorizationUrl,
+    function getEmbedToken() {
+          return fetch(tokenGenerationUrl, {  // Backend application URL
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({})
+          })
+            .then(response => {
+              if (!response.ok) throw new Error("Token fetch failed");
+              return response.text();
+            });
         }
-      });
-      dashboard.loadDashboard();
-    }
-  },
+    
+      function renderDashboard(data) {
+        getEmbedToken()
+          .then(accessToken => {
+            const dashboard = BoldBI.create({
+              serverUrl: data.ServerUrl + "/" + data.SiteIdentifier,
+              dashboardId: data.DashboardId,
+              embedContainerId: "dashboard",
+              embedToken: accessToken
+            });
+
+            dashboard.loadDashboard();
+          })
+          .catch(err => {
+            console.error("Error rendering dashboard:", err);
+          });
+      }
+  }
 };
 </script>
 
